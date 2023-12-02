@@ -1,0 +1,1 @@
+clang++ -std=c++20 -Wall -O2 d1.cpp -o d1.o

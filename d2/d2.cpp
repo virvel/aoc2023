@@ -2,12 +2,7 @@
 
 int main(int argc, char * argv[]) {
 
-    std::fstream buffer( argv[1]); 
-    std::vector<std::string> lines;
-    std::string line;
-    while ( std::getline (buffer, line)) {
-        lines.push_back(line);
-    }
+    auto lines = readlines(argv[1]);
 
     std::unordered_map<std::string, int> colors_max {{"red", 12}, {"green", 13}, {"blue", 14}};
 
@@ -39,6 +34,5 @@ int main(int argc, char * argv[]) {
 
     std::cout << ((index-1)*(index)/2) - sum  << std::endl;
     
-
     return 0;
 }

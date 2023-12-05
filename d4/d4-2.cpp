@@ -1,6 +1,6 @@
 #include "util.h"
 
-auto get_matches = [](std::vector<int> &c, std::vector<int> &w) { 
+auto get_matches = [](std::vector<std::string> &c, std::vector<std::string> &w) { 
     int acc= 0;
     auto pos = c.begin();
     while (pos < c.end()) {
@@ -21,17 +21,8 @@ int main(int argc, char *argv[]) {
         auto line = l.erase(0, l.find_first_of(":")+1);
         auto stacks = split(line,"|");
         
-        const auto wins = split(stacks[0], " ");
-        const auto my_cards = split(stacks[1], " ");
-        
-        std::vector<int> winners (wins.size());
-        std::vector<int> card (my_cards.size());
-
-        {
-            auto stoi = [](auto& a) {return std::stoi(a);};
-            std::transform(wins.begin(), wins.end(), winners.begin(),  stoi);
-            std::transform(my_cards.begin(), my_cards.end(), card.begin(),  stoi);
-        }
+        auto winners = split(stacks[0], " ");
+        auto card = split(stacks[1], " ");
         
         auto m = get_matches(card, winners);
         cards.push_back(m);

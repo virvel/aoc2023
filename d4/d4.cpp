@@ -9,17 +9,8 @@ int main(int argc, char *argv[]) {
         auto line = l.erase(0, l.find_first_of(":")+1);
         auto stacks = split(line,"|");
         
-        const auto wins = split(stacks[0], " ");
-        const auto mycards = split(stacks[1], " ");
-        
-        std::vector<int> cards (mycards.size());
-        std::vector<int> winners (wins.size());
-
-        {
-            auto stoi = [](auto &a) {return std::stoi(a);};
-            std::transform(mycards.begin(), mycards.end(), cards.begin(),  stoi);
-            std::transform(wins.begin(), wins.end(), winners.begin(),  stoi);
-        }
+        const auto winners = split(stacks[0], " ");
+        const auto cards = split(stacks[1], " ");
        
         unsigned pts = 0;
         auto pos = cards.begin();

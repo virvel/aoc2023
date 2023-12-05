@@ -22,6 +22,12 @@ auto readlines(const std::string fn) {
     return lines;
 }
 
+auto readfile(const std::string fn) {
+    std::fstream f( fn); 
+    std::stringstream b;
+    b << f.rdbuf();
+    return b.str();
+}
 template <typename T>
 constexpr void print(const T value) { 
     std::cout << value << std::endl; 
@@ -80,3 +86,4 @@ auto count(std::string s)
     } 
     return m; 
 } 
+

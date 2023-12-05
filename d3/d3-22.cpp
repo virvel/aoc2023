@@ -9,38 +9,22 @@ struct item {
 };
 
 struct pt {
-
-    int x;
-    int y;
-
-    pt(int xx, int yy) {
-        x = xx;
-        y = yy;
-    }
-
-    bool operator==(const pt& other) const {
-        return ( x == other.x and y == other.y);
-    }
-
+    unsigned x,y;
+    pt(unsigned xx, unsigned yy) {x = xx, y = yy;}
+    bool operator==(const pt& other) const {return ( x == other.x and y == other.y);}
 };
 
-struct MyHash
+template <>
+struct std::hash<pt>
 {
-    std::size_t operator()(const pt& p) const noexcept
-    {
-        std::size_t a = std::hash<int>{}(p.x);
-        std::size_t b = std::hash<int>{}(p.y);
-        return a >= b ? a * a + a + b : a + b * b;
-    }
+    unsigned long operator()(const pt& p) const {
+        unsigned long a = static_cast<unsigned long>(p.x);
+        unsigned long b = static_cast<unsigned long>(p.y);
+        return (a << 16) | b;
+    } 
 };
 
-using hm = std::unordered_multimap<pt, int, MyHash>;
-
-bool scanLine(std::string str, std::string symbols) {
-    print(str);
-    const auto result = std::find_first_of(str.begin(), str.end(), symbols.begin(), symbols.end());
-    return (result == str.end()) ? false : true;
-}
+using hm = std::unordered_multimap<pt, unsigned>;
 
 void scan(item token, std::vector<std::string> lines, hm *hm) {
     const std::string symbols = "*";
@@ -52,22 +36,24 @@ void scan(item token, std::vector<std::string> lines, hm *hm) {
 
     int l = lnum == 0 ? lnum + 1 : lnum;
     for (auto &line : std::vector<std::string>(begin, end)) {
-        const auto result = std::find_first_of(line.begin()+min, line.begin()+max, symbols.begin(), symbols.end());
-        if (result != (line.begin()+max)) {
-            int x = result - line.begin();
-            hm->insert({pt(x,l),std::stoi(token.number)});
+        auto pos = line.begin()+min;
+        while (pos < line.begin()+max) {
+            const auto result = std::find_first_of(pos, line.begin()+max, symbols.begin(), symbols.end());
+            if (result != (line.begin()+max)) {
+                int x = std::distance(line.begin(),result);
+                hm->insert({pt((unsigned)x,(unsigned)l),std::stoi(token.number)});
+                break;
+            }
+            pos = result + 1;
         }
         l++;
     }
-
 }
 
 int main(int argc, char *argv[]) {
 
     auto lines = readlines(argv[1]);
     const std::string digits = "0123456789";
-
-    for (auto &l:lines) print(l);
 
     hm gears;
 
@@ -92,26 +78,21 @@ int main(int argc, char *argv[]) {
                     scan(token, lines, &gears); 
                 }
             }
-                pos = result + digits.size();
+            pos = result + digits.size();
         }
-
     }
     unsigned long sum = 0;
-
-    for (auto & g : gears)
-    {
-        int prod = 1;
-        auto bucket = gears.bucket(g.first);
-        if (gears.bucket_size(bucket) == 2) {
-            auto it = gears.begin(bucket);
-            while (it != gears.end(bucket)) 
-                prod *= (*it++).second;
-            sum += prod;
+    
+    for(const auto& [key,value] : gears) {
+        unsigned prod = 1;
+        auto range = gears.equal_range(key);
+        if (std::distance(range.first, range.second) == 2) {
+            for (auto it = range.first; it != range.second; ++it) {
+                prod *= (*it).second;
+            }
+        sum += prod;
         }
-
     }
-        
+     
     print(sum/2);
-
-    return 0;
 }

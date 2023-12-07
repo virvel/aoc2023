@@ -10,7 +10,7 @@
 #include <numeric>
 #include <list>
 
-auto readlines(const std::string fn) {
+std::vector<std::string> readlines(const std::string fn) {
 
     std::fstream buffer( fn ); 
     std::vector<std::string> lines;
@@ -22,7 +22,7 @@ auto readlines(const std::string fn) {
     return lines;
 }
 
-auto readfile(const std::string fn) {
+std::string readfile(const std::string fn) {
     std::fstream f( fn); 
     std::stringstream b;
     b << f.rdbuf();

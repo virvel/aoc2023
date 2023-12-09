@@ -8,8 +8,6 @@ seqs = []
 for line in lines[:-1]:
     seqs.append([int(l) for l in line.split()])
 
-print(seqs)
-
 sum = 0
 sum2 = 0 
 for s in seqs:

@@ -1,8 +1,6 @@
 import sys
 import re
 import math
-from operator import mul
-from functools import reduce
 from collections import defaultdict
 
 string = open(sys.argv[1], "r").read()
@@ -25,15 +23,14 @@ def traverse(steps):
                 x = D[x][0]
             elif s == "R":
                 x = D[x][1]
+            sum += 1
             if x == "ZZZ":
-                sum +=1
                 break
-            else:
-                sum += 1
-
     return sum
 
+
 def traverse3(x,steps):
+
     sum = 0
     while x[-1] != "Z":
         for s in steps:
@@ -55,7 +52,6 @@ R = []
 for s in starts:
     R.append(traverse3(s,steps))
 
-y = reduce(mul, R, 1)
 
 # Part 2 comment
 # Every starting value finishes at a certain step N.
@@ -63,11 +59,7 @@ y = reduce(mul, R, 1)
 # is a solution to the problem, but not the first/smallest solution.
 # In order to find the smallest we need to make sure the 
 # multiplicity of each prime factor is minimized.
-# To do this simply divide the product of N-i by the the common factors.
-# In this case the only common factor was 263, so we need to divide by
-# 263^{number_of_valid_starts-1}.
+# The lowest common multiple is exactly that.
 
-gcd = math.gcd(*R)
-y  = y // (gcd**(len(R)-1))
-print("p2:", y)
+print("p2:", math.lcm(*R))
  
